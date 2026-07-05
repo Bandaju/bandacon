@@ -1,0 +1,23 @@
+[
+    {
+        "iconUrl": "https://www.google.com/s2/favicons?domain=anizm.net&sz=%size%",
+        "fileHash": "sha256-8b04040c13fdf504195f4a8a505fa48c181d0bfc7cc9f8dc77b3f19fd93582b5",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Bandaju/bandacon",
+        "fileSize": 18231,
+        "status": 1,
+        "language": "tr",
+        "authors": [
+            "Bandaju"
+        ],
+        "tvTypes": [
+            "Anime",
+            "AnimeMovie"
+        ],
+        "version": 2,
+        "internalName": "Anizm",
+        "description": "Anizm - T\u00fcrk\u00e7e altyaz\u0131l\u0131 anime (anizm.net). Fansub se\u00e7enekleriyle HLS ak\u0131\u015f\u0131, 1080p'ye kadar.",
+        "url": "https://raw.githubusercontent.com/Bandaju/bandacon/builds/Anizm.cs3",
+        "name": "Anizm"
+    }
+]
