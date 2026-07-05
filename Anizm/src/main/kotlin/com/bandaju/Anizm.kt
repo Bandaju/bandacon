@@ -46,20 +46,39 @@ class Anizm : MainAPI() {
     private fun posterUrl(file: String?): String? =
         if (file.isNullOrBlank()) null else "$mainUrl/storage/pcovers/$file"
 
+    // Cloudflare's managed challenge is solved by CloudflareKiller on a full
+    // HTML page (the WebView cannot settle a bare JSON endpoint). Warming the
+    // main page first caches cf_clearance for the anizm.net host, so the
+    // /searchAnime AJAX call afterwards carries the cookie.
+    private suspend fun warmCloudflare() {
+        runCatching { app.get(mainUrl, interceptor = cfKiller) }
+    }
+
     override suspend fun search(query: String): List<SearchResponse> {
+        warmCloudflare()
         val q = URLEncoder.encode(query, "UTF-8")
         val url = "$mainUrl/searchAnime?query=$q&page=1&type=detailed&limit=24" +
                   "&priorityField=info_title&orderBy=info_year&orderDirection=ASC"
-        val root = app.get(url, headers = ajaxHeaders, interceptor = cfKiller)
-            .parsedSafe<SearchRoot>() ?: return emptyList()
+        val resp = app.get(url, headers = ajaxHeaders, referer = "$mainUrl/", interceptor = cfKiller)
+        val root = resp.parsedSafe<SearchRoot>()
 
-        return root.data.orEmpty().mapNotNull { item ->
+        val results = root?.data.orEmpty().mapNotNull { item ->
             val slug  = item.slug ?: return@mapNotNull null
             val title = item.title ?: slug
             newAnimeSearchResponse(title, "$mainUrl/$slug", TvType.Anime) {
                 this.posterUrl = posterUrl(item.poster)
             }
         }
+
+        // TEMP diagnostic: if nothing parsed, surface what the device actually
+        // received so the failure mode (CF challenge / parse / empty) is visible.
+        if (results.isEmpty()) {
+            val body = resp.text.replace("\n", " ").take(70)
+            return listOf(
+                newAnimeSearchResponse("DBG code=${resp.code} len=${resp.text.length} $body", mainUrl, TvType.Anime)
+            )
+        }
+        return results
     }
 
     override suspend fun quickSearch(query: String): List<SearchResponse> = search(query)
