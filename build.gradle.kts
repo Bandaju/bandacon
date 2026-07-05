@@ -61,7 +61,10 @@ subprojects {
                 freeCompilerArgs.addAll(
                     "-Xno-call-assertions",
                     "-Xno-param-assertions",
-                    "-Xno-receiver-assertions"
+                    "-Xno-receiver-assertions",
+                    // cloudstream3 pre-release stubs ship Kotlin 2.3.0 metadata;
+                    // let the 2.1.0 compiler read them (suggested by the compiler itself).
+                    "-Xskip-metadata-version-check"
                 )
             }
         }
