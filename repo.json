@@ -1,0 +1,8 @@
+{
+  "name": "Bandacon | Türkçe Anime",
+  "description": "Türkçe altyazılı anime için CloudStream eklenti reposu. İlk kaynak: Anizm.",
+  "manifestVersion": 1,
+  "pluginLists": [
+    "https://raw.githubusercontent.com/Bandaju/bandacon/builds/plugins.json"
+  ]
+}
